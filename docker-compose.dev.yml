@@ -7,10 +7,10 @@ services:
       - cnpmjs-mysql:/data/db
       # - ./init.d/mongo/:/docker-entrypoint-initdb.d/
     environment:
-      - MYSQL_ROOT_PASSWORD=mysql
-      - MYSQL_DATABASE=cnpmjs
-      - MYSQL_USER=cnpmjs
-      - MYSQL_PASSWORD=cnpmjs
+      MYSQL_USER: root      
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: cnpmjs
+      MYSQL_ROOT_HOST: "%"
     networks:
       - cnpmjs
     ports:

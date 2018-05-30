@@ -15,8 +15,8 @@ module.exports = appInfo => {
     port: process.env.CNPMJS_DB_PORT || '3306',
     host: process.env.CNPMJS_DB_HOST || 'localhost',
     database: process.env.CNPMJS_DB_NAME || 'cnpmjs',
-    username: process.env.CNPMJS_DB_USERNAME || 'cnpmjs',
-    password: process.env.CNPMJS_DB_PASSWORD || 'cnpmjs',
+    username: process.env.CNPMJS_DB_USERNAME || 'root',
+    password: process.env.CNPMJS_DB_PASSWORD || '',
     pool: {
       maxConnections: 10,
       minConnections: 0,
