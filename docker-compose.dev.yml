@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7.13
+    restart: always
+    volumes:
+      - cnpmjs-mysql:/data/db
+      # - ./init.d/mongo/:/docker-entrypoint-initdb.d/
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=cnpmjs
+      - MYSQL_USER=cnpmjs
+      - MYSQL_PASSWORD=cnpmjs
+    networks:
+      - cnpmjs
+    ports:
+      - 3306:3306
+
+volumes:
+  cnpmjs-mysql:
+  
+networks:
+  cnpmjs:
+    driver: bridge      
