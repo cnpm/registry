@@ -27,7 +27,7 @@ module.exports = app => {
       comment: 'module name',
     },
     version: {
-      type: STRING(30),
+      type: STRING(50),
       allowNull: false,
       comment: 'module version',
     },

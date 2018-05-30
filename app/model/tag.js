@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `tag` (
  `gmt_modified` datetime NOT NULL COMMENT 'modified time',
  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT 'module name',
  `tag` varchar(30) NOT NULL COMMENT 'tag name',
- `version` varchar(30) NOT NULL COMMENT 'module version',
+ `version` varchar(50) NOT NULL COMMENT 'module version',
  `module_id` bigint(20) unsigned NOT NULL COMMENT 'module id',
  PRIMARY KEY (`id`),
  UNIQUE KEY `tag_name_tag` (`name`, `tag`),
@@ -44,7 +44,7 @@ module.exports = app => {
       comment: 'tag name',
     },
     version: {
-      type: STRING(30),
+      type: STRING(50),
       allowNull: false,
       comment: 'module version',
     },

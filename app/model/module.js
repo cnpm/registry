@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `module` (
   `id` INTEGER NOT NULL auto_increment ,
   `author` VARCHAR(100) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
-  `version` VARCHAR(30) NOT NULL,
+  `version` VARCHAR(50) NOT NULL,
   `description` TEXT,
   `package` TEXT,
   `dist_shasum` VARCHAR(100),
@@ -59,7 +59,7 @@ module.exports = app => {
       comment: 'module name',
     },
     version: {
-      type: STRING(30),
+      type: STRING(50),
       allowNull: false,
       comment: 'module version',
     },
