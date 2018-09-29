@@ -1,25 +1,31 @@
 'use strict';
 
 /*
-CREATE TABLE IF NOT EXISTS `module_abbreviated` (
+CREATE TABLE IF NOT EXISTS `module` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
  `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
+ `author` varchar(100) NOT NULL COMMENT 'module author',
  `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
  `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module version',
- `package` longtext COMMENT 'the abbreviated metadata',
- `publish_time` bigint(20) unsigned COMMENT 'the publish time',
+ `description` longtext COMMENT 'module description',
+ `package` longtext COMMENT 'package.json',
+ `dist_shasum` varchar(100) DEFAULT NULL COMMENT 'module dist SHASUM',
+ `dist_tarball` varchar(2048) DEFAULT NULL COMMENT 'module dist tarball',
+ `dist_size` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'module dist size',
+ `publish_time` bigint(20) unsigned COMMENT 'module publish time',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_version` (`name`,`version`),
  KEY `idx_gmt_modified` (`gmt_modified`),
- KEY `idx_publish_time` (`publish_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module abbreviated info';
+ KEY `idx_publish_time` (`publish_time`),
+ KEY `idx_author` (`author`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module version info';
 */
 
 module.exports = app => {
-  const { STRING, BIGINT, TEXT, DATE } = app.Sequelize;
+  const { STRING, BIGINT, TEXT, INTEGER, DATE } = app.Sequelize;
 
-  const Model = app.model.define('ModuleAbbreviated', {
+  const Model = app.model.define('ModuleVersion', {
     id: {
       type: BIGINT(20).UNSIGNED,
       primaryKey: true,
@@ -32,6 +38,11 @@ module.exports = app => {
     gmt_modified: {
       type: DATE(6),
       allowNull: false,
+    },
+    author: {
+      type: STRING(100),
+      allowNull: false,
+      comment: 'first maintainer name',
     },
     name: {
       type: STRING(214),
@@ -47,17 +58,33 @@ module.exports = app => {
       charset: 'ascii',
       collate: 'ascii_general_ci',
     },
+    description: {
+      type: TEXT('long'),
+    },
     package: {
       type: TEXT('long'),
       comment: 'package.json',
+    },
+    dist_shasum: {
+      type: STRING(100),
+      allowNull: true,
+    },
+    dist_tarball: {
+      type: STRING(2048),
+      allowNull: true,
+    },
+    dist_size: {
+      type: INTEGER(10).UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
     },
     publish_time: {
       type: BIGINT(20).UNSIGNED,
       allowNull: true,
     },
   }, {
-    tableName: 'module_abbreviated',
-    comment: 'module abbreviated info',
+    tableName: 'module',
+    comment: 'module info',
     indexes: [
       {
         name: 'uk_name_version',
@@ -71,6 +98,10 @@ module.exports = app => {
       {
         name: 'idx_publish_time',
         fields: [ 'publish_time' ],
+      },
+      {
+        name: 'idx_author',
+        fields: [ 'author' ],
       },
     ],
   });

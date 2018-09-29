@@ -11,6 +11,7 @@ module.exports = {
   dep: [
     'egg',
     'egg-scripts',
+    'mysql2',
   ],
   devdep: [
     'egg-ci',
@@ -21,10 +22,10 @@ module.exports = {
     'eslint',
     'eslint-config-egg',
     'webstorm-disable-index',
+    'sequelize-cli',
   ],
   exclude: [
     './test/fixtures',
     './dist',
   ],
 };
-

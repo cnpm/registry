@@ -3,62 +3,82 @@
 /*
 CREATE TABLE IF NOT EXISTS `tag` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
- `gmt_create` datetime NOT NULL COMMENT 'create time',
- `gmt_modified` datetime NOT NULL COMMENT 'modified time',
- `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT 'module name',
- `tag` varchar(30) NOT NULL COMMENT 'tag name',
- `version` varchar(50) NOT NULL COMMENT 'module version',
+ `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
+ `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
+ `tag` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'tag name',
+ `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module version',
  `module_id` bigint(20) unsigned NOT NULL COMMENT 'module id',
  PRIMARY KEY (`id`),
- UNIQUE KEY `tag_name_tag` (`name`, `tag`),
- KEY `tag_gmt_modified` (`gmt_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='module tag';
- */
+ UNIQUE KEY `uk_name_tag` (`name`, `tag`),
+ KEY `idx_gmt_modified` (`gmt_modified`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module tag';
+*/
 
 module.exports = app => {
-  const { STRING, BIGINT } = app.Sequelize;
+  const { STRING, BIGINT, DATE } = app.Sequelize;
 
-  const options = {
+  const Model = app.model.define('Tag', {
+    id: {
+      type: BIGINT(20).UNSIGNED,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    gmt_create: {
+      type: DATE(6),
+      allowNull: false,
+    },
+    gmt_modified: {
+      type: DATE(6),
+      allowNull: false,
+    },
+    name: {
+      type: STRING(214),
+      allowNull: false,
+      comment: 'module name',
+      charset: 'ascii',
+      collate: 'ascii_general_ci',
+    },
+    tag: {
+      type: STRING(100),
+      allowNull: false,
+      comment: 'tag name',
+      charset: 'ascii',
+      collate: 'ascii_general_ci',
+    },
+    version: {
+      type: STRING(100),
+      allowNull: false,
+      comment: 'module version',
+      charset: 'ascii',
+      collate: 'ascii_general_ci',
+    },
+    module_id: {
+      type: BIGINT(20).UNSIGNED,
+      allowNull: false,
+      comment: 'module id',
+    },
+  }, {
     tableName: 'tag',
     comment: 'module tag',
     indexes: [
       {
+        name: 'uk_name_tag',
         unique: true,
         fields: [ 'name', 'tag' ],
       },
       {
+        name: 'idx_gmt_modified',
         fields: [ 'gmt_modified' ],
       },
     ],
-  };
+  });
 
-  const Model = app.model.define('Tag', {
-    name: {
-      type: STRING(100),
-      allowNull: false,
-      comment: 'module name',
+  Object.assign(Model, {
+    async findByNameAndTag(name, tag) {
+      return await this.find({ where: { name, tag } });
     },
-    tag: {
-      type: STRING(30),
-      allowNull: false,
-      comment: 'tag name',
-    },
-    version: {
-      type: STRING(50),
-      allowNull: false,
-      comment: 'module version',
-    },
-    module_id: {
-      type: BIGINT(20),
-      allowNull: false,
-      comment: 'module id',
-    },
-  }, options);
-
-  Model.findByNameAndTag = async (name, tag) => {
-    return await this.find({ where: { name, tag } });
-  };
+  });
 
   return Model;
 };
-

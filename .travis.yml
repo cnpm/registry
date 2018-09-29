@@ -1,17 +1,15 @@
 sudo: false
+os:
+  - linux
+  - osx
 language: node_js
 node_js:
-  - '8'
-  - '9'
-services:
-  - mysql
-before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS cnpmjs;'
-  
+  - '10'
 install:
   - npm i npminstall && npminstall
 script:
-  - npm run ci
+  - npm run init-and-ci
 after_script:
   - npminstall codecov && codecov
-
+services:
+  - mysql
