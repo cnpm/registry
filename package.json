@@ -46,7 +46,7 @@
     "services": "mysql",
     "version": "10",
     "os": {
-      "travis": "linux, osx"
+      "travis": "linux"
     },
     "command": {
       "travis": "init-and-ci"

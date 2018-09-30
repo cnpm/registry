@@ -13,11 +13,11 @@ for (const filename of filenames) {
   const filecontent = fs.readFileSync(filepath, 'utf8');
   const m = COMMENT_RE.exec(filecontent);
   if (!m) throw new Error(`${filepath} missing the SQL comment`);
-  // sqls.push(`${'-'.repeat(28)} ${filename} ${'-'.repeat(50 - filename.length)}`);
+  sqls.push(`-- ${filename} ${'-'.repeat(76 - filename.length)}`);
   sqls.push(m[1].trim());
 }
 
-const sql = sqls.join('\n');
+const sql = sqls.join('\n\n');
 const sqlpath = path.join(__dirname, '../database/tables.sql');
 console.log('[create_sql] Save Create Table SQL to %s', sqlpath);
 fs.writeFileSync(sqlpath, sql);

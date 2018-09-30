@@ -52,9 +52,9 @@ npm i
 
 ```bash
 # for local env
-node_modules/.bin/sequelize db:migrate
+npm run db:migrate
 # for unittest env
-NODE_ENV=test node_modules/.bin/sequelize db:migrate
+NODE_ENV=test npm run db:migrate
 ```
 
 ### Development

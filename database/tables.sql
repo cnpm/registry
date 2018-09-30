@@ -1,3 +1,5 @@
+-- download.js -----------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `downloads` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -39,6 +41,9 @@ CREATE TABLE IF NOT EXISTS `downloads` (
   UNIQUE KEY `uk_name_date` (`name`, `date`),
   KEY `idx_date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module download total info';
+
+-- module_abbreviated.js -------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_abbreviated` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -52,6 +57,9 @@ CREATE TABLE IF NOT EXISTS `module_abbreviated` (
  KEY `idx_gmt_modified` (`gmt_modified`),
  KEY `idx_publish_time` (`publish_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module abbreviated info';
+
+-- module_deps.js --------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_deps` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -61,6 +69,9 @@ CREATE TABLE IF NOT EXISTS `module_deps` (
  UNIQUE KEY `uk_name_deps` (`name`,`deps`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module deps';
+
+-- module_keyword.js -----------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_keyword` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -71,6 +82,9 @@ CREATE TABLE IF NOT EXISTS `module_keyword` (
  UNIQUE KEY `uk_keyword_module_name` (`keyword`,`name`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module keyword';
+
+-- module_log.js ---------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_log` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -81,6 +95,9 @@ CREATE TABLE IF NOT EXISTS `module_log` (
  PRIMARY KEY (`id`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module sync log';
+
+-- module_maintainer.js --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_maintainer` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -90,6 +107,9 @@ CREATE TABLE IF NOT EXISTS `module_maintainer` (
  UNIQUE KEY `uk_user_module_name` (`user`,`name`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='private module maintainers';
+
+-- module_star.js --------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_star` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -99,6 +119,9 @@ CREATE TABLE IF NOT EXISTS `module_star` (
  UNIQUE KEY `uk_user_module_name` (`user`,`name`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module star';
+
+-- module_unpublished.js -------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module_unpublished` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -109,6 +132,9 @@ CREATE TABLE IF NOT EXISTS `module_unpublished` (
  UNIQUE KEY `uk_name` (`name`),
  KEY `idx_gmt_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module unpublished info';
+
+-- module_version.js -----------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `module` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -128,6 +154,9 @@ CREATE TABLE IF NOT EXISTS `module` (
  KEY `idx_publish_time` (`publish_time`),
  KEY `idx_author` (`author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module version info';
+
+-- npm_module_maintainer.js ----------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `npm_module_maintainer` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -137,6 +166,25 @@ CREATE TABLE IF NOT EXISTS `npm_module_maintainer` (
  UNIQUE KEY `uk_user_module_name` (`user`,`name`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='npm original module maintainers';
+
+-- package.js ------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `package` (
+ `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
+ `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
+ `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
+ `author` varchar(100) NOT NULL COMMENT 'first publish author name',
+ `description` longtext COMMENT 'module description',
+ `license` varchar(100) NOT NULL COMMENT 'license of the package',
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `uk_name` (`name`),
+ KEY `idx_gmt_modified` (`gmt_modified`),
+ KEY `idx_author` (`author`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='package info';
+
+-- package_readme.js -----------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `package_readme` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -148,6 +196,9 @@ CREATE TABLE IF NOT EXISTS `package_readme` (
  UNIQUE KEY `uk_name` (`name`),
  KEY `idx_gmt_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='package latest readme';
+
+-- tag.js ----------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `tag` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
@@ -160,6 +211,9 @@ CREATE TABLE IF NOT EXISTS `tag` (
  UNIQUE KEY `uk_name_tag` (`name`, `tag`),
  KEY `idx_gmt_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module tag';
+
+-- total.js --------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `total` (
  `name` varchar(100) NOT NULL COMMENT 'total name',
  `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
@@ -177,6 +231,9 @@ CREATE TABLE IF NOT EXISTS `total` (
 -- init `total` count
 INSERT INTO total(name, gmt_modified) VALUES('total', now())
   ON DUPLICATE KEY UPDATE gmt_modified=now();
+
+-- user.js ---------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `user` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
