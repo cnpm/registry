@@ -10,7 +10,6 @@ describe('test/app/controller/package.test.js', () => {
       assert(res.status === 422);
       console.log(res.text);
       assert.deepStrictEqual(res.body, {
-        code: 'invalid',
         error: 'package: name cannot start with a period',
       });
     });

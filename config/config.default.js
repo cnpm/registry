@@ -22,11 +22,12 @@ module.exports = appInfo => {
   config.onerror = {
     // make sure all response return json
     accepts: () => 'json',
+    // https://github.com/npm/registry/blob/master/docs/restful-api-conventions.md#common-responses
+    // All errors should be in the form {message: 'error message'}. Internally, error responses should include a stack property.
     json(err) {
       const status = err.status || 500;
       this.status = status;
       const body = {
-        code: err.code,
         error: err.message,
       };
       this.body = body;
