@@ -10,10 +10,10 @@
 
 [npm-image]: http://cnpmjs.org/badge/v/cnpm-registry.svg?style=flat-square
 [npm-url]: http://cnpmjs.org/package/cnpm-registry
-[travis-image]: https://img.shields.io/travis/cnpm/registry.svg?style=flat-square
-[travis-url]: https://travis-ci.org/cnpm/registry
-[codecov-image]: https://codecov.io/gh/cnpm/registry/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/cnpm/registry
+[travis-image]: https://img.shields.io/travis/cnpm/registry.cnpmjs.org.svg?style=flat-square
+[travis-url]: https://travis-ci.org/cnpm/registry.cnpmjs.org
+[codecov-image]: https://codecov.io/gh/cnpm/registry.cnpmjs.org/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/cnpm/registry.cnpmjs.org
 [david-image]: https://img.shields.io/david/cnpm/registry.svg?style=flat-square
 [david-url]: https://david-dm.org/cnpm/registry
 [snyk-image]: https://snyk.io/test/npm/cnpm-registry/badge.svg?style=flat-square
