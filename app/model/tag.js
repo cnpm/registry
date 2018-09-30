@@ -5,14 +5,14 @@ CREATE TABLE IF NOT EXISTS `tag` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
  `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
- `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
  `tag` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'tag name',
- `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module version',
+ `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package version',
  `module_id` bigint(20) unsigned NOT NULL COMMENT 'module id',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_tag` (`name`, `tag`),
  KEY `idx_gmt_modified` (`gmt_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module tag';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='package tag';
 */
 
 module.exports = app => {
@@ -35,7 +35,7 @@ module.exports = app => {
     name: {
       type: STRING(214),
       allowNull: false,
-      comment: 'module name',
+      comment: 'package name',
       charset: 'ascii',
       collate: 'ascii_general_ci',
     },
@@ -49,7 +49,7 @@ module.exports = app => {
     version: {
       type: STRING(100),
       allowNull: false,
-      comment: 'module version',
+      comment: 'package version',
       charset: 'ascii',
       collate: 'ascii_general_ci',
     },
@@ -60,7 +60,7 @@ module.exports = app => {
     },
   }, {
     tableName: 'tag',
-    comment: 'module tag',
+    comment: 'package tag',
     indexes: [
       {
         name: 'uk_name_tag',

@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `module_abbreviated` (
 module.exports = app => {
   const { STRING, BIGINT, TEXT, DATE } = app.Sequelize;
 
-  const Model = app.model.define('ModuleAbbreviated', {
+  const Model = app.model.define('ModuleAbbreviatedVersion', {
     id: {
       type: BIGINT(20).UNSIGNED,
       primaryKey: true,

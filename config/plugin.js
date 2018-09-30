@@ -8,11 +8,6 @@ exports.sequelize = {
   package: 'egg-sequelize',
 };
 
-exports.parameters = {
-  enable: true,
-  package: 'egg-parameters',
-};
-
 exports.validate = {
   enable: true,
   package: 'egg-validate',
