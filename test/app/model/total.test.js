@@ -11,7 +11,7 @@ describe('test/app/model/total.test.js', () => {
       },
     });
     assert(row);
-    console.log(row.toJSON());
+    // console.log(row.toJSON());
     assert(row.name === 'total');
     assert(row.gmt_modified);
     const gmt_modified = row.gmt_modified;
@@ -26,7 +26,7 @@ describe('test/app/model/total.test.js', () => {
       },
     });
     assert(row2);
-    console.log(row2.toJSON());
+    // console.log(row2.toJSON());
     assert(row2.name === row.name);
     assert(row2.gmt_modified.toJSON() !== gmt_modified.toJSON());
     assert(row2.gmt_modified.toJSON() > gmt_modified.toJSON());

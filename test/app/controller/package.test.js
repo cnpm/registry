@@ -8,7 +8,6 @@ describe('test/app/controller/package.test.js', () => {
       const res = await app.httpRequest()
         .get('/.foo');
       assert(res.status === 422);
-      console.log(res.text);
       assert.deepStrictEqual(res.body, {
         error: 'package: name cannot start with a period',
       });

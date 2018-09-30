@@ -28,7 +28,7 @@ describe('test/app/model/module_version.test.js', () => {
         author: 'foo',
       });
       assert(row);
-      console.log(row.toJSON());
+      // console.log(row.toJSON());
       assert(row.name === name);
       assert(row.version === version);
       assert(row.gmt_create);

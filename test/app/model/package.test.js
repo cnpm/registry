@@ -17,7 +17,7 @@ describe('test/app/model/package.test.js', () => {
       });
       row = await ctx.model.Package.findByName('foo');
       assert(row);
-      console.log(row.toJSON());
+      // console.log(row.toJSON());
       assert(row.description === 'description support emoji 😄 😈');
       assert(row.license === 'MIT');
       assert(row.author === 'fengmk2');

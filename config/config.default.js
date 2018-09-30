@@ -32,6 +32,12 @@ module.exports = appInfo => {
       };
       this.body = body;
     },
+    appErrorFilter(err) {
+      const status = err.status || 500;
+      // ignore log client request error
+      if (status < 500) return false;
+      return true;
+    },
   };
 
   return config;
