@@ -4,10 +4,13 @@
   "description": "Private npm registry for Enterprise, base on eggjs",
   "dependencies": {
     "egg": "^2.11.2",
+    "egg-parameters": "^0.1.0",
     "egg-scripts": "^2.9.1",
     "egg-sequelize": "^4.1.0",
+    "egg-validate": "^2.0.1",
     "mysql2": "^1.6.1",
-    "utility": "^1.15.0"
+    "utility": "^1.15.0",
+    "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",

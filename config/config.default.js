@@ -12,5 +12,26 @@ module.exports = appInfo => {
   // database
   config.sequelize = require('./sequelize');
 
+  // egg-validate
+  config.validate = {
+    convert: true,
+    // '' NaN null will regard as undefined
+    widelyUndefined: true,
+  };
+
+  config.onerror = {
+    // make sure all response return json
+    accepts: () => 'json',
+    json(err) {
+      const status = err.status || 500;
+      this.status = status;
+      const body = {
+        code: err.code,
+        error: err.message,
+      };
+      this.body = body;
+    },
+  };
+
   return config;
 };
