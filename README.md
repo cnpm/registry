@@ -110,6 +110,10 @@ node_modules/.bin/sequelize db:migrate:undo
 > And The `name` ends up being part of a URL, an argument on the command line, and a folder name. Therefore, the `name` can't contain any non-URL-safe characters.
 > So we can use `ascii` charset to store `name` and `version` on MySQL. The max length is 314 bytes.
 
+## Development Helpful Documents
+
+- [Sequelize Documents](http://docs.sequelizejs.com/)
+
 ## MySQL Character Set
 
 Run below command to check all charset in your MySQL
