@@ -1,5 +1,7 @@
 'use strict';
 
+const utils = require('../utils/model_utils');
+
 /*
 CREATE TABLE IF NOT EXISTS `module_abbreviated` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -8,11 +10,10 @@ CREATE TABLE IF NOT EXISTS `module_abbreviated` (
  `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
  `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module version',
  `package` longtext COMMENT 'the abbreviated metadata',
- `publish_time` bigint(20) unsigned COMMENT 'the publish time',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_version` (`name`,`version`),
  KEY `idx_gmt_modified` (`gmt_modified`),
- KEY `idx_publish_time` (`publish_time`)
+ KEY `idx_gmt_create` (`gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module abbreviated info';
 */
 
@@ -50,6 +51,8 @@ module.exports = app => {
     package: {
       type: TEXT('long'),
       comment: 'package.json',
+      get: utils.JSONGetter('package'),
+      set: utils.JSONSetter('package'),
     },
     publish_time: {
       type: BIGINT(20).UNSIGNED,
@@ -73,14 +76,6 @@ module.exports = app => {
         fields: [ 'publish_time' ],
       },
     ],
-  });
-
-  Object.assign(Model, {
-    async findByNameAndVersion(name, version) {
-      return await this.find({
-        where: { name, version },
-      });
-    },
   });
 
   return Model;

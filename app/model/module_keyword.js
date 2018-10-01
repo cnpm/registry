@@ -60,14 +60,5 @@ module.exports = app => {
     ],
   });
 
-  Model.findByKeywordAndName = async (keyword, name) => {
-    return await this.find({
-      where: {
-        keyword,
-        name,
-      },
-    });
-  };
-
   return Model;
 };

@@ -51,11 +51,10 @@ CREATE TABLE IF NOT EXISTS `module_abbreviated` (
  `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
  `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module version',
  `package` longtext COMMENT 'the abbreviated metadata',
- `publish_time` bigint(20) unsigned COMMENT 'the publish time',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_version` (`name`,`version`),
  KEY `idx_gmt_modified` (`gmt_modified`),
- KEY `idx_publish_time` (`publish_time`)
+ KEY `idx_gmt_create` (`gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module abbreviated info';
 
 -- module_deps.js --------------------------------------------------------------
@@ -147,11 +146,10 @@ CREATE TABLE IF NOT EXISTS `module` (
  `dist_shasum` varchar(100) DEFAULT NULL COMMENT 'module dist SHASUM',
  `dist_tarball` varchar(2048) DEFAULT NULL COMMENT 'module dist tarball',
  `dist_size` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'module dist size',
- `publish_time` bigint(20) unsigned COMMENT 'module publish time',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_version` (`name`,`version`),
  KEY `idx_gmt_modified` (`gmt_modified`),
- KEY `idx_publish_time` (`publish_time`),
+ KEY `idx_gmt_create` (`gmt_create`),
  KEY `idx_author` (`author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module version info';
 
@@ -206,7 +204,6 @@ CREATE TABLE IF NOT EXISTS `tag` (
  `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
  `tag` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'tag name',
  `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module version',
- `module_id` bigint(20) unsigned NOT NULL COMMENT 'module id',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_tag` (`name`, `tag`),
  KEY `idx_gmt_modified` (`gmt_modified`)
@@ -243,7 +240,6 @@ CREATE TABLE IF NOT EXISTS `user` (
  `password_sha` varchar(100) NOT NULL COMMENT 'user password hash',
  `ip` varchar(64) NOT NULL COMMENT 'user last request ip',
  `roles` varchar(200) NOT NULL DEFAULT '[]' COMMENT 'user roles',
- `rev` varchar(40) NOT NULL COMMENT 'user rev',
  `email` varchar(400) NOT NULL COMMENT 'user email',
  `json` longtext COMMENT 'json details',
  `npm_user` tinyint(1) DEFAULT '0' COMMENT 'user sync from npm or not, 1: true, other: false',

@@ -1,5 +1,7 @@
 'use strict';
 
+const utils = require('../utils/model_utils');
+
 /*
 CREATE TABLE IF NOT EXISTS `module` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -13,11 +15,10 @@ CREATE TABLE IF NOT EXISTS `module` (
  `dist_shasum` varchar(100) DEFAULT NULL COMMENT 'module dist SHASUM',
  `dist_tarball` varchar(2048) DEFAULT NULL COMMENT 'module dist tarball',
  `dist_size` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'module dist size',
- `publish_time` bigint(20) unsigned COMMENT 'module publish time',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_version` (`name`,`version`),
  KEY `idx_gmt_modified` (`gmt_modified`),
- KEY `idx_publish_time` (`publish_time`),
+ KEY `idx_gmt_create` (`gmt_create`),
  KEY `idx_author` (`author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module version info';
 */
@@ -64,6 +65,8 @@ module.exports = app => {
     package: {
       type: TEXT('long'),
       comment: 'package.json',
+      get: utils.JSONGetter('package'),
+      set: utils.JSONSetter('package'),
     },
     dist_shasum: {
       type: STRING(100),
@@ -96,22 +99,14 @@ module.exports = app => {
         fields: [ 'gmt_modified' ],
       },
       {
-        name: 'idx_publish_time',
-        fields: [ 'publish_time' ],
+        name: 'idx_gmt_create',
+        fields: [ 'gmt_create' ],
       },
       {
         name: 'idx_author',
         fields: [ 'author' ],
       },
     ],
-  });
-
-  Object.assign(Model, {
-    async findByNameAndVersion(name, version) {
-      return await this.find({
-        where: { name, version },
-      });
-    },
   });
 
   return Model;

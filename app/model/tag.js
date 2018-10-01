@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS `tag` (
  `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
  `tag` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'tag name',
  `version` varchar(100) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package version',
- `module_id` bigint(20) unsigned NOT NULL COMMENT 'module id',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name_tag` (`name`, `tag`),
  KEY `idx_gmt_modified` (`gmt_modified`)
@@ -53,11 +52,6 @@ module.exports = app => {
       charset: 'ascii',
       collate: 'ascii_general_ci',
     },
-    module_id: {
-      type: BIGINT(20).UNSIGNED,
-      allowNull: false,
-      comment: 'module id',
-    },
   }, {
     tableName: 'tag',
     comment: 'package tag',
@@ -72,12 +66,6 @@ module.exports = app => {
         fields: [ 'gmt_modified' ],
       },
     ],
-  });
-
-  Object.assign(Model, {
-    async findByNameAndTag(name, tag) {
-      return await this.find({ where: { name, tag } });
-    },
   });
 
   return Model;

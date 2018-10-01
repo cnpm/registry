@@ -65,13 +65,5 @@ module.exports = app => {
     ],
   });
 
-  Object.assign(Model, {
-    async findByName(name) {
-      return await this.find({
-        where: { name },
-      });
-    },
-  });
-
   return Model;
 };

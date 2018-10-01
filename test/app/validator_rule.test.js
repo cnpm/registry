@@ -3,6 +3,28 @@
 const { app, assert } = require('egg-mock/bootstrap');
 
 describe('test/app/validator_rule.test.js', () => {
+  describe('packageName', () => {
+    it('should not allow contains %', () => {
+      let errors = app.validator.validate({ name: 'packageName' }, { name: 'foo%' });
+      assert(errors);
+      assert(errors[0].message === 'name must not contain %');
+
+      errors = app.validator.validate({ name: 'packageName' }, { name: 'foo%foo' });
+      assert(errors);
+      assert(errors[0].message === 'name must not contain %');
+    });
+
+    it('should not allow contains @ on scoped package subname', () => {
+      let errors = app.validator.validate({ name: 'packageName' }, { name: '@foo/bar@' });
+      assert(errors);
+      assert(errors[0].message === 'name can only contain URL-friendly characters');
+
+      errors = app.validator.validate({ name: 'packageName' }, { name: '@foo/@bar' });
+      assert(errors);
+      assert(errors[0].message === 'name can only contain URL-friendly characters');
+    });
+  });
+
   describe('packageVersion', () => {
     it('should allow `latest` as version', async () => {
       assert(!app.validator.validate({ version: 'packageVersion' }, { version: 'latest' }));

@@ -61,36 +61,5 @@ module.exports = app => {
     ],
   });
 
-  Object.assign(Model, {
-    async findByName(name) {
-      return await this.find({
-        where: {
-          name,
-        },
-      });
-    },
-
-    async save(name, pkg) {
-      let row = await this.find({
-        where: {
-          name,
-        },
-      });
-      if (row) {
-        row.package = pkg;
-        if (row.changed()) {
-          row = await row.save([ 'package' ]);
-        }
-        return row;
-      }
-
-      row = this.build({
-        name,
-        package: pkg,
-      });
-      return await row.save();
-    },
-  });
-
   return Model;
 };

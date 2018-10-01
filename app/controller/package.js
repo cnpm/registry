@@ -1,6 +1,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
+const semver = require('semver');
 
 module.exports = class extends Controller {
   // GET /{package}
@@ -16,18 +17,18 @@ module.exports = class extends Controller {
       ctx.service.package.get(params.name),
       ctx.service.package.listAllTags(params.name),
     ]);
-    if (!pkg || tags.length === 0) throw ctx.notFound();
+    if (!pkg || tags.length === 0) throw ctx.notFoundError();
 
     const distTags = {};
     for (const item of tags) {
       distTags[item.tag] = item.version;
     }
 
-    const abbreviatedMetaType = 'application/vnd.npm.install-v1+json';
-    const needAbbreviatedFormat = ctx.accepts([ 'json', abbreviatedMetaType ]) === abbreviatedMetaType;
+    const abbreviatedFormat = 'application/vnd.npm.install-v1+json';
+    const needAbbreviatedFormat = ctx.accepts([ 'json', abbreviatedFormat ]) === abbreviatedFormat;
     if (needAbbreviatedFormat) {
       const versions = await ctx.service.package.listAllAbbreviatedVersions(pkg.name);
-      if (versions.length > 0) throw ctx.notFoundError();
+      if (versions.length === 0) throw ctx.notFoundError();
       // {
       //   "dist-tags": {
       //     "latest": "1.0.0"
@@ -48,16 +49,23 @@ module.exports = class extends Controller {
       //   }
       // }
       const versionsMap = {};
+      let modified = pkg.gmt_modified;
       for (const item of versions) {
-        versionsMap[item.version] = item;
+        versionsMap[item.version] = item.package;
+        // if version gmt_modified later then package gmt_modified, use it
+        if (item.gmt_modified.getTime() > modified.getTime()) {
+          modified = item.gmt_modified;
+        }
       }
 
       ctx.body = {
-        'dist-tag': distTags,
-        modified: pkg.gmt_modified,
+        'dist-tags': distTags,
+        modified,
         name: pkg.name,
         versions: versionsMap,
       };
+      // koa will override json content-type, so should set content-type after body
+      ctx.set('content-type', `${abbreviatedFormat}; charset=utf-8`);
       return;
     }
 
@@ -66,38 +74,56 @@ module.exports = class extends Controller {
       versions,
       maintainers,
       packageReadme,
-      author,
     ] = await Promise.all([
-      ctx.service.package.listAllAbbreviatedVersions(pkg.name),
+      ctx.service.package.listAllVersions(pkg.name),
       ctx.service.package.listAllMaintainers(pkg.name),
       ctx.service.package.getVersionReadme(pkg.name, distTags.latest),
-      ctx.service.user.get(pkg.author),
     ]);
     if (versions.length === 0) throw ctx.notFoundError();
-
-    author = author || { author: pkg.author };
     packageReadme = packageReadme || {};
 
+    maintainers = maintainers.map(item => ({ name: item.name, email: item.email }));
+
     // "time": {
-    //     "1.0.0": "2015-03-24T00:12:24.039Z",
-    //     "created": "2015-03-24T00:12:24.039Z",
-    //     "modified": "2015-05-16T22:27:54.741Z"
-    // },
-    const time = {};
+    //    "modified": "2015-05-16T22:27:54.741Z",
+    //    "created": "2015-03-24T00:12:24.039Z",
+    //    "1.0.0": "2015-03-24T00:12:24.039Z"
+    //  },
+    const time = {
+      created: pkg.gmt_create,
+      modified: pkg.gmt_modified,
+    };
+    const versionsMap = {};
+    let maxVersion;
+    let latestVersion;
     for (const item of versions) {
-      time[item.version] = item.gmt_modified;
+      // use the package version create time as publish time, because package has been published, it can't be change
+      time[item.version] = item.gmt_create;
+      versionsMap[item.version] = item.package;
+      if (item.gmt_modified.getTime() > time.modified.getTime()) {
+        time.modified = item.gmt_modified;
+      }
+      if (!maxVersion || semver.gt(item.version, maxVersion.version)) {
+        maxVersion = item;
+      }
+      if (!latestVersion && item.version === distTags.latest) {
+        latestVersion = item;
+      }
     }
-    time.created = pkg.gmt_create;
-    time.modified = pkg.gmt_modified;
+
+    if (!latestVersion) {
+      // can't find the latest version item, use the maxVersion instead
+      latestVersion = maxVersion;
+      distTags.latest = latestVersion.version;
+    }
+
+    const author = latestVersion.package.author || { name: pkg.author };
 
     ctx.body = {
       _attachments: {},
       _id: pkg.name,
       _rev: `${pkg.id}`,
-      author: {
-        email: author.email,
-        name: author.name,
-      },
+      author,
       description: pkg.description,
       'dist-tags': distTags,
       license: pkg.license,
@@ -106,7 +132,7 @@ module.exports = class extends Controller {
       readme: packageReadme.readme || '',
       readmeFilename: packageReadme.readme_filename || '',
       time,
-      versions,
+      versions: versionsMap,
     };
   }
 
@@ -129,6 +155,6 @@ module.exports = class extends Controller {
     const row = await ctx.service.package.getVersion(params.name, version);
     if (!row) throw ctx.notFoundError();
 
-    ctx.body = row;
+    ctx.body = row.package;
   }
 };

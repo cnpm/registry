@@ -1,7 +1,5 @@
 'use strict';
 
-const moduleMaintainerClassMethods = require('../utils/module_maintainer_class_methods');
-
 /*
 CREATE TABLE IF NOT EXISTS `npm_module_maintainer` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -55,8 +53,6 @@ module.exports = app => {
       },
     ],
   });
-
-  Object.assign(Model, moduleMaintainerClassMethods);
 
   return Model;
 };
