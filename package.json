@@ -4,6 +4,7 @@
   "description": "Private npm registry for Enterprise, base on eggjs",
   "dependencies": {
     "egg": "^2.11.2",
+    "egg-cancan": "^0.6.0",
     "egg-scripts": "^2.9.1",
     "egg-sequelize": "^4.1.0",
     "egg-validate": "^2.0.1",

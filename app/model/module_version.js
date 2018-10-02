@@ -81,10 +81,6 @@ module.exports = app => {
       allowNull: false,
       defaultValue: 0,
     },
-    publish_time: {
-      type: BIGINT(20).UNSIGNED,
-      allowNull: true,
-    },
   }, {
     tableName: 'module',
     comment: 'module info',

@@ -51,6 +51,10 @@ module.exports = class extends Service {
     });
   }
 
+  async saveVersion(pkg) {
+
+  }
+
   async getVersion(name, version) {
     const { ctx } = this;
     return await ctx.model.ModuleVersion.findOne({

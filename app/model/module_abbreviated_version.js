@@ -54,10 +54,6 @@ module.exports = app => {
       get: utils.JSONGetter('package'),
       set: utils.JSONSetter('package'),
     },
-    publish_time: {
-      type: BIGINT(20).UNSIGNED,
-      allowNull: true,
-    },
   }, {
     tableName: 'module_abbreviated',
     comment: 'module abbreviated info',
@@ -72,8 +68,8 @@ module.exports = app => {
         fields: [ 'gmt_modified' ],
       },
       {
-        name: 'idx_publish_time',
-        fields: [ 'publish_time' ],
+        name: 'idx_gmt_modified',
+        fields: [ 'gmt_modified' ],
       },
     ],
   });
