@@ -105,5 +105,14 @@ module.exports = app => {
     ],
   });
 
+  Object.assign(Model.prototype, {
+    async updatePackage(attrs) {
+      const pkg = this.package;
+      Object.assign(pkg, attrs);
+      this.package = pkg;
+      await this.save();
+    },
+  });
+
   return Model;
 };

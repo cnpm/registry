@@ -7,18 +7,18 @@ CREATE TABLE IF NOT EXISTS `module_unpublished` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
  `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
- `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
  `package` longtext COMMENT 'base info: tags, time, maintainers, description, versions',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name` (`name`),
  KEY `idx_gmt_modified` (`gmt_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module unpublished info';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='package unpublished info';
 */
 
 module.exports = app => {
   const { BIGINT, STRING, TEXT, DATE } = app.Sequelize;
 
-  const Model = app.model.define('ModuleUnpublished', {
+  const Model = app.model.define('PackageUnpublished', {
     id: {
       type: BIGINT(20).UNSIGNED,
       primaryKey: true,
@@ -35,7 +35,7 @@ module.exports = app => {
     name: {
       type: STRING(214),
       allowNull: false,
-      comment: 'module name',
+      comment: 'package name',
       charset: 'ascii',
       collate: 'ascii_general_ci',
     },
@@ -47,7 +47,7 @@ module.exports = app => {
     },
   }, {
     tableName: 'module_unpublished',
-    comment: 'module unpublished info',
+    comment: 'package unpublished info',
     indexes: [
       {
         name: 'uk_name',

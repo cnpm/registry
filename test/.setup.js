@@ -7,6 +7,10 @@ before(async () => {
   // clean all exists datas
   await emptyDB.init(app.mockContext());
   await app.model.Total.init();
+
+  app.mockUser = function(user) {
+    app.mockContext({ user });
+  };
 });
 
 beforeEach(async () => {

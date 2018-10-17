@@ -175,15 +175,15 @@ describe('test/app/service/package.test.js', () => {
 
     it('should return [] when user names all not exists', async () => {
       const ctx = app.mockContext();
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser1',
       });
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser2',
       });
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser3',
       });
@@ -193,15 +193,15 @@ describe('test/app/service/package.test.js', () => {
 
     it('should return all when user names all exists', async () => {
       const ctx = app.mockContext();
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser1',
       });
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser3',
       });
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser2',
       });
@@ -219,15 +219,15 @@ describe('test/app/service/package.test.js', () => {
 
     it('should return only exists users', async () => {
       const ctx = app.mockContext();
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser1',
       });
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser3',
       });
-      await ctx.model.ModuleMaintainer.create({
+      await ctx.model.PrivatePackageMaintainer.create({
         name: 'foo',
         user: 'mockuser2',
       });

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `package` (
  `author` varchar(100) NOT NULL COMMENT 'first publish author name',
  `description` longtext COMMENT 'module description',
  `license` varchar(100) NOT NULL COMMENT 'license of the package',
+ `private` tinyint(1) DEFAULT '0' COMMENT 'private package or not, 1: true, other: false',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name` (`name`),
  KEY `idx_gmt_modified` (`gmt_modified`),
@@ -18,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `package` (
 
 // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
 module.exports = app => {
-  const { STRING, BIGINT, TEXT, DATE } = app.Sequelize;
+  const { STRING, BIGINT, TEXT, DATE, BOOLEAN } = app.Sequelize;
 
   const Model = app.model.define('Package', {
     id: {
@@ -53,6 +54,13 @@ module.exports = app => {
       type: STRING(100),
       allowNull: true,
       comment: 'license of the package',
+    },
+    isPrivate: {
+      field: 'private',
+      type: BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      comment: 'private package or not, 1: true, other: false',
     },
   }, {
     tableName: 'package',

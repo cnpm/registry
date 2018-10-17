@@ -95,18 +95,6 @@ CREATE TABLE IF NOT EXISTS `module_log` (
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module sync log';
 
--- module_maintainer.js --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `module_maintainer` (
- `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
- `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
- `user` varchar(100) NOT NULL COMMENT 'user name',
- `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
- PRIMARY KEY (`id`),
- UNIQUE KEY `uk_user_module_name` (`user`,`name`),
- KEY `idx_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='private module maintainers';
-
 -- module_star.js --------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `module_star` (
@@ -118,19 +106,6 @@ CREATE TABLE IF NOT EXISTS `module_star` (
  UNIQUE KEY `uk_user_module_name` (`user`,`name`),
  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module star';
-
--- module_unpublished.js -------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `module_unpublished` (
- `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
- `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
- `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
- `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
- `package` longtext COMMENT 'base info: tags, time, maintainers, description, versions',
- PRIMARY KEY (`id`),
- UNIQUE KEY `uk_name` (`name`),
- KEY `idx_gmt_modified` (`gmt_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module unpublished info';
 
 -- module_version.js -----------------------------------------------------------
 
@@ -168,18 +143,6 @@ CREATE TABLE IF NOT EXISTS `module_readme` (
  KEY `idx_gmt_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='module version readme';
 
--- npm_module_maintainer.js ----------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `npm_module_maintainer` (
- `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
- `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
- `user` varchar(100) NOT NULL COMMENT 'user name',
- `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
- PRIMARY KEY (`id`),
- UNIQUE KEY `uk_user_module_name` (`user`,`name`),
- KEY `idx_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='npm original module maintainers';
-
 -- package.js ------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `package` (
@@ -190,11 +153,49 @@ CREATE TABLE IF NOT EXISTS `package` (
  `author` varchar(100) NOT NULL COMMENT 'first publish author name',
  `description` longtext COMMENT 'module description',
  `license` varchar(100) NOT NULL COMMENT 'license of the package',
+ `private` tinyint(1) DEFAULT '0' COMMENT 'private package or not, 1: true, other: false',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name` (`name`),
  KEY `idx_gmt_modified` (`gmt_modified`),
  KEY `idx_author` (`author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='package info';
+
+-- package_unpublished.js ------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `module_unpublished` (
+ `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
+ `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
+ `gmt_modified` datetime(6) NOT NULL COMMENT 'modified time',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
+ `package` longtext COMMENT 'base info: tags, time, maintainers, description, versions',
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `uk_name` (`name`),
+ KEY `idx_gmt_modified` (`gmt_modified`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='package unpublished info';
+
+-- private_package_maintainer.js -----------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `module_maintainer` (
+ `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
+ `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
+ `user` varchar(100) NOT NULL COMMENT 'user name',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `uk_user_package_name` (`user`,`name`),
+ KEY `idx_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='private package maintainers';
+
+-- public_package_maintainer.js ------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `npm_module_maintainer` (
+ `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
+ `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
+ `user` varchar(100) NOT NULL COMMENT 'user name',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `uk_user_package_name` (`user`,`name`),
+ KEY `idx_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='npm original package maintainers';
 
 -- tag.js ----------------------------------------------------------------------
 

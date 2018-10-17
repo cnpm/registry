@@ -157,4 +157,130 @@ module.exports = class extends Controller {
 
     ctx.body = row.package;
   }
+
+  // PUT /{package}
+  // 'dist-tags': { latest: '0.0.2' },
+  //  _attachments:
+  // { 'nae-sandbox-0.0.2.tgz':
+  //    { content_type: 'application/octet-stream',
+  //      data: 'H4sIAAAAA
+  //      length: 9883
+  async publish() {
+    const { ctx } = this;
+    ctx.requireUser();
+    if (ctx.app.config.enablePrivate) ctx.requireAdmin();
+
+    const rawParams = { name: ctx.params[0] };
+    const params = ctx.permitAndValidateParams({
+      name: { type: 'privatePackageName', trim: true },
+    }, rawParams);
+    const data = ctx.request.body;
+    Object.assign(data, params);
+
+    const pkg = await ctx.service.package.get(data.name);
+    if (pkg) await ctx.authorize('publish', pkg, { type: 'package' });
+
+    const attachments = data._attachments || {};
+    const versions = data.versions || {};
+    let filename = Object.keys(attachments)[0];
+    if (filename) filename = filename.trim();
+    let version = Object.keys(versions)[0];
+    if (version) version = version.trim();
+
+    if (!version) throw ctx.badRequestError('versions is empty');
+
+    // deprecated package versions
+    if (!filename) {
+      const deprecatedVersions = [];
+      for (const v in versions) {
+        const row = versions[v];
+        if (typeof row.deprecated === 'string') {
+          row.version = v;
+          deprecatedVersions.push(row);
+        }
+      }
+      if (deprecatedVersions.length === 0) throw ctx.badRequestError('_attachments is empty');
+      if (!pkg) throw ctx.badRequestError(`${data.name} is not exists`);
+
+      await ctx.service.package.deprecateVersions(pkg, deprecatedVersions);
+      ctx.body = { ok: true };
+      return;
+    }
+
+    const attachment = attachments[filename];
+    attachment.filename = filename;
+    const versionPackage = versions[version];
+    versionPackage.name = data.name;
+    const maintainers = versionPackage.maintainers || [];
+    versionPackage.maintainers = maintainers;
+
+    // should never happened in normal request
+    if (maintainers.length === 0) {
+      throw ctx.badRequestError('maintainers is empty');
+    }
+
+    // notice that admins can not publish to all modules
+    // (but admins can add self to maintainers first)
+
+    // make sure user in auth is in maintainers
+    // should never happened in normal request
+    let currentUserInMaintainers = false;
+    for (const maintainer of maintainers) {
+      if (maintainer.name === ctx.user.name) {
+        currentUserInMaintainers = true;
+        break;
+      }
+    }
+    if (!currentUserInMaintainers) {
+      throw ctx.badRequestError(`${ctx.user.name} does not in maintainer list`);
+    }
+
+    versionPackage._publish_on_cnpm = true;
+    const distTags = data['dist-tags'] || {};
+    const tags = []; // tag, version
+    for (const tag in distTags) {
+      tags.push({
+        tag,
+        version: distTags[tag],
+      });
+    }
+
+    if (tags.length === 0) {
+      throw ctx.badRequestError('dist-tags is empty');
+    }
+
+    if (await ctx.service.package.getVersion(data.name, version)) {
+      throw ctx.badRequestError(`cannot modify pre-existing version: ${version}`);
+    }
+
+    // upload attachment
+    attachment.buffer = Buffer.from(attachment.data, 'base64');
+
+    if (attachment.buffer.length !== attachment.length) {
+      throw ctx.badRequestError(`Attachment size ${attachment.length} not match download size ${attachment.buffer.length}`);
+    }
+
+    ctx.logger.info('%s publish new %s:%s, attachment size: %s, maintainers: %j, tags: %j',
+      ctx.user.name, data.name, version, attachment.length, maintainers, tags);
+
+    const row = await ctx.service.package.saveVersion(pkg, versionPackage, tags, attachment);
+
+    ctx.status = 201;
+    ctx.body = {
+      ok: true,
+      rev: String(row.id),
+    };
+
+    // hooks
+    // const envelope = {
+    //   event: 'package:publish',
+    //   name: versionPackage.name,
+    //   type: 'package',
+    //   version: versionPackage.version,
+    //   hookOwner: null,
+    //   payload: null,
+    //   change: null,
+    // };
+    // hook.trigger(envelope);
+  }
 };

@@ -121,3 +121,4 @@ coverage/
 .idea/
 run/
 *.swp
+.cnpmjs.org/

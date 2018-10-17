@@ -5,13 +5,7 @@ const validatePackageName = require('validate-npm-package-name');
 module.exports = app => {
   const { validator } = app;
 
-  // https://docs.npmjs.com/files/package.json#name
-  // Some rules:
-  // The name must be less than or equal to 214 characters. This includes the scope for scoped packages.
-  // The name can't start with a dot or an underscore.
-  // New packages must not have uppercase letters in the name.
-  // The name ends up being part of a URL, an argument on the command line, and a folder name. Therefore, the name can't contain any non-URL-safe characters.
-  validator.addRule('packageName', (_, value) => {
+  function _validatePackageName(value) {
     if (value.includes('%')) return 'name must not contain %';
     if (value[0] === '?') return 'name can\'t start with a question mark';
     if (value[0] === '!') return 'name can\'t start with an exclamation point';
@@ -35,6 +29,21 @@ module.exports = app => {
         return result.warnings.join('; ');
       }
     }
+  }
+
+  // https://docs.npmjs.com/files/package.json#name
+  // Some rules:
+  // The name must be less than or equal to 214 characters. This includes the scope for scoped packages.
+  // The name can't start with a dot or an underscore.
+  // New packages must not have uppercase letters in the name.
+  // The name ends up being part of a URL, an argument on the command line, and a folder name. Therefore, the name can't contain any non-URL-safe characters.
+  validator.addRule('packageName', (_, value) => {
+    return _validatePackageName(value);
+  }, false, 'string');
+
+  validator.addRule('privatePackageName', (_, value) => {
+    if (!app.isPrivatePackage(value)) return 'name must start with private scopes';
+    return _validatePackageName(value);
   }, false, 'string');
 
   // valid version or latest

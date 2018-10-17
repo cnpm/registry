@@ -175,6 +175,7 @@ CREATE TABLE IF NOT EXISTS `package` (
  `author` varchar(100) NOT NULL COMMENT 'first publish author name',
  `description` longtext COMMENT 'module description',
  `license` varchar(100) NOT NULL COMMENT 'license of the package',
+ `private` tinyint(1) DEFAULT '0' COMMENT 'private package or not, 1: true, other: false',
  PRIMARY KEY (`id`),
  UNIQUE KEY `uk_name` (`name`),
  KEY `idx_gmt_modified` (`gmt_modified`),

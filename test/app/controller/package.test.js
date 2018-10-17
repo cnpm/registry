@@ -1,8 +1,91 @@
 'use strict';
 
-const { app, assert } = require('egg-mock/bootstrap');
+const testUtils = require('../../utils');
+const { app, assert, mock } = require('egg-mock/bootstrap');
 
 describe('test/app/controller/package.test.js', () => {
+  describe('PUT /{package}', () => {
+    it('should 422 publish a public non-scoped package', async () => {
+      app.mockUser({ name: 'mockuser1' });
+      const pkg = testUtils.getPackage();
+      const res = await app.httpRequest()
+        .put(`/${pkg.name}`)
+        .send(pkg);
+      assert(res.status === 422);
+      assert.deepEqual(res.body, {
+        error: 'name: name must start with private scopes',
+      });
+    });
+
+    it('should 422 publish a public scoped package', async () => {
+      app.mockUser({ name: 'mockuser1' });
+      const pkg = testUtils.getPackage('@foo/bar');
+      const res = await app.httpRequest()
+        .put(`/${pkg.name}`)
+        .send(pkg);
+      assert(res.status === 422);
+      assert.deepEqual(res.body, {
+        error: 'name: name must start with private scopes',
+      });
+    });
+
+    it('should 401 when on anonymous user', async () => {
+      const pkg = testUtils.getPackage('@cnpm/bar');
+      const res = await app.httpRequest()
+        .put(`/${pkg.name}`)
+        .send(pkg);
+      assert(res.status === 401);
+      assert.deepEqual(res.body, {
+        error: 'Unauthorized',
+      });
+    });
+
+    it('should 401 when normal user publish on enablePrivate = true', async () => {
+      app.mockUser({ name: 'mockuser1' });
+      mock(app.config, 'enablePrivate', true);
+      const pkg = testUtils.getPackage('@cnpm/bar');
+      const res = await app.httpRequest()
+        .put(`/${pkg.name}`)
+        .send(pkg);
+      assert(res.status === 401);
+      assert.deepEqual(res.body, {
+        error: 'required admin user',
+      });
+    });
+
+    it('should 403 when user is not maintainer on exists package', async () => {
+      mockPackage('@cnpm/bar');
+      app.mockUser({ name: 'mockuser1' });
+      const pkg = testUtils.getPackage('@cnpm/bar');
+      const res = await app.httpRequest()
+        .put(`/${pkg.name}`)
+        .send(pkg);
+      assert(res.status === 403);
+      assert.deepEqual(res.body, {
+        error: 'Access denied',
+      });
+    });
+
+    it('should 201 on public a new package', async () => {
+      app.mockUser({ name: 'mockuser1' });
+      const pkg = testUtils.getPackage('@cnpm/bar', '1.0.0', 'mockuser1');
+      let res = await app.httpRequest()
+        .put(`/${pkg.name}`)
+        .send(pkg);
+      assert(res.status === 201);
+      assert.deepEqual(res.body, {
+        ok: true,
+        rev: '1',
+      });
+
+      res = await app.httpRequest()
+        .get('/@cnpm/bar');
+      assert(res.status === 200);
+      assert(res.headers['content-type'] === 'application/json; charset=utf-8');
+      assert(res.body.versions['1.0.0']);
+    });
+  });
+
   describe('GET /{package}', () => {
     it('should 422 when package name invalid', async () => {
       let res = await app.httpRequest()

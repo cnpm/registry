@@ -54,4 +54,16 @@ module.exports = {
     }
     return validParams;
   },
+
+  requireUser() {
+    if (!this.user) throw this.unauthorizedError();
+  },
+
+  requireAdmin() {
+    if (!this.user || !this.app.config.admins[this.user.name]) throw this.unauthorizedError('required admin user');
+  },
+
+  isPrivatePackage(name) {
+    return this.app.isPrivatePackage(name);
+  },
 };

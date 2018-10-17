@@ -12,3 +12,8 @@ exports.validate = {
   enable: true,
   package: 'egg-validate',
 };
+
+exports.cancan = {
+  enable: true,
+  package: 'egg-cancan',
+};

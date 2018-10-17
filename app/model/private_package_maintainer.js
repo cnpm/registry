@@ -5,17 +5,17 @@ CREATE TABLE IF NOT EXISTS `module_maintainer` (
  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
  `gmt_create` datetime(6) NOT NULL COMMENT 'create time',
  `user` varchar(100) NOT NULL COMMENT 'user name',
- `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'module name',
+ `name` varchar(214) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL COMMENT 'package name',
  PRIMARY KEY (`id`),
- UNIQUE KEY `uk_user_module_name` (`user`,`name`),
+ UNIQUE KEY `uk_user_package_name` (`user`,`name`),
  KEY `idx_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='private module maintainers';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='private package maintainers';
 */
 
 module.exports = app => {
   const { BIGINT, STRING, DATE } = app.Sequelize;
 
-  const Model = app.model.define('ModuleMaintainer', {
+  const Model = app.model.define('PrivatePackageMaintainer', {
     id: {
       type: BIGINT(20).UNSIGNED,
       primaryKey: true,
@@ -39,11 +39,11 @@ module.exports = app => {
     },
   }, {
     tableName: 'module_maintainer',
-    comment: 'private module maintainers',
+    comment: 'private package maintainers',
     updatedAt: false,
     indexes: [
       {
-        name: 'uk_user_module_name',
+        name: 'uk_user_package_name',
         unique: true,
         fields: [ 'user', 'name' ],
       },
